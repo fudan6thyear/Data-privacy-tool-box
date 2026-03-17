@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DATA COMPLIANCE TOOLBOX</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topnav panel">
+        <div class="topnav__brand">
+          <span class="topnav__name" id="toolBrandName">DATA COMPLIANCE TOOLBOX</span>
+        </div>
+
+        <div class="topnav__center">
+          <div class="role-switch" id="roleSwitch" aria-label="Select role"></div>
+        </div>
+
+        <div class="topnav__tools">
+          <details class="trash-dropdown" id="trashDropdown">
+            <summary class="trash-dropdown__trigger">
+              <span id="trashSectionLabel">Trash</span>
+              <span class="trash-dropdown__count" id="trashCount">0</span>
+            </summary>
+            <div class="trash-dropdown__panel">
+              <div class="trash-dropdown__header">
+                <p class="section-label">Workspace</p>
+                <h3 id="trashSectionTitle">Deleted records</h3>
+              </div>
+              <div id="trashList" class="history-list history-list--compact"></div>
+            </div>
+          </details>
+
+          <div class="language-switch" id="languageSwitch" aria-label="Language switch">
+            <span class="sr-only" id="languageSwitchLabel">Language</span>
+            <div class="language-switch__controls">
+              <button id="langEn" type="button">EN</button>
+              <button id="langZh" type="button">中文</button>
+            </div>
+          </div>
+
+          <p class="save-status" id="saveStatus">Draft ready.</p>
+        </div>
+      </header>
+
+      <main class="experience">
+        <section class="hero-stage panel">
+          <div class="hero-stage__copy">
+            <p class="eyebrow" id="heroEyebrow">ICO-aligned privacy operations workspace</p>
+            <h1 id="heroTitle">Document processing activities with clarity.</h1>
+            <p class="hero__text" id="heroText">
+              Version v0.1 helps teams document records of processing activities in
+              a clean web flow based on the UK ICO Controller and Processor
+              templates.
+            </p>
+
+            <div class="hero-stage__context">
+              <span class="chip chip--soft" id="heroRolePill"></span>
+              <span class="chip chip--soft" id="heroRecordPill"></span>
+              <span class="chip chip--soft" id="heroAutosavePill"></span>
+            </div>
+
+            <div class="hero-stage__actions">
+              <button id="addActivityButton" class="button button--primary" type="button">
+                Add activity
+              </button>
+              <button id="exportButton" class="button button--secondary" type="button">
+                Export JSON
+              </button>
+              <button id="sampleButton" class="button button--link" type="button">
+                Load sample
+              </button>
+            </div>
+          </div>
+
+          <aside class="hero-stage__snapshot panel panel--inner">
+            <div class="section-heading section-heading--compact">
+              <div>
+                <p class="section-label" id="summaryLabelTemplate">Active template</p>
+                <h2 id="snapshotTitle">Workspace snapshot</h2>
+              </div>
+            </div>
+
+            <div class="snapshot-grid">
+              <div class="snapshot-item">
+                <span class="summary-card__label" id="summaryLabelTemplateDuplicate">Template</span>
+                <strong id="templateLabel">Controller</strong>
+              </div>
+              <div class="snapshot-item">
+                <span class="summary-card__label" id="summaryLabelFieldCount">Product / service</span>
+                <strong id="fieldCount">-</strong>
+              </div>
+              <div class="snapshot-item">
+                <span class="summary-card__label" id="summaryLabelActivityCount">Processing activities</span>
+                <strong id="activityCount">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span class="summary-card__label" id="summaryLabelUpdatedAt">Last saved</span>
+                <strong id="updatedAt">Not saved yet</strong>
+              </div>
+            </div>
+
+            <div class="hero-stage__snapshot-actions">
+              <button id="saveButton" class="button button--ghost" type="button">
+                Save draft
+              </button>
+            </div>
+          </aside>
+        </section>
+
+        <section class="context-stage">
+          <article class="panel record-panel">
+            <div class="section-heading section-heading--compact">
+              <div>
+                <p class="section-label" id="recordSectionLabel">Product / service</p>
+                <h2 id="recordSectionTitle">Current record</h2>
+              </div>
+              <div class="current-record-badge" id="currentRecordBadge"></div>
+            </div>
+            <p class="section-text record-panel__text" id="recordSectionText">
+              Use one record per product or service.
+            </p>
+            <label class="sidebar-label" id="recordNameLabel" for="recordNameInput">
+              Product / service name
+            </label>
+            <input id="recordNameInput" type="text" />
+            <div class="record-panel__actions">
+              <button id="newRecordButton" class="button button--secondary" type="button">
+                New product / service
+              </button>
+              <button id="deleteRecordButton" class="button button--ghost" type="button">
+                Delete current record
+              </button>
+            </div>
+          </article>
+
+          <article class="panel history-panel">
+            <div class="section-heading section-heading--compact">
+              <div>
+                <p class="section-label" id="historySectionLabel">History</p>
+                <h2 id="historySectionTitle">Saved product / service records</h2>
+              </div>
+            </div>
+            <div id="historyList" class="history-list"></div>
+          </article>
+        </section>
+
+        <section class="panel contact-stage">
+          <div class="section-heading">
+            <div>
+              <p class="section-label" id="contactSectionLabel">Organisation profile</p>
+              <h2 id="contactSectionTitle">Contact details</h2>
+            </div>
+            <p class="section-text" id="contactSectionText">
+              Shared across both ICO templates: organisation, DPO, and
+              representative contact details.
+            </p>
+          </div>
+          <div id="contactSections" class="contact-sections"></div>
+        </section>
+
+        <section class="panel activity-stage">
+          <div class="section-heading">
+            <div>
+              <p class="section-label" id="activitySectionLabel">Article 30 workspace</p>
+              <h2 id="activitySectionTitle">Processing activities</h2>
+            </div>
+            <p class="section-text" id="roleDescription"></p>
+          </div>
+
+          <div class="activity-toolbar">
+            <div class="activity-toolbar__meta">
+              <div class="legend" id="fieldLegend"></div>
+            </div>
+            <button id="addActivityInlineButton" class="button button--primary" type="button">
+              Add activity
+            </button>
+          </div>
+
+          <div id="activityList" class="activity-list"></div>
+        </section>
+
+        <section class="panel preview-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-label" id="previewSectionLabel">Review</p>
+              <h2 id="previewSectionTitle">ICO-style record preview</h2>
+            </div>
+            <div class="preview-header-side">
+              <p class="section-text" id="previewSectionText">
+                Review how each activity maps back to the official template
+                columns before exporting or transcribing elsewhere.
+              </p>
+              <div class="scope-switch" id="previewScopeSwitch"></div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="preview-table">
+              <thead id="previewHead"></thead>
+              <tbody id="previewBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
