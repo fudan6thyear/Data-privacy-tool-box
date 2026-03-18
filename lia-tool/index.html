@@ -14,48 +14,40 @@
     <div class="page-shell">
       <header class="topnav panel">
         <div class="topnav__brand">
-          <span class="topnav__name" data-i18n="brandName">LIA WORKBENCH</span>
-          <span class="topnav__tag" data-i18n="brandTag">Multi-assessment legitimate interests workspace</span>
+          <span class="topnav__name" id="toolBrandName">LIA WORKBENCH</span>
+          <span class="topnav__tag" id="toolBrandTag">Multi-assessment legitimate interests workspace</span>
         </div>
 
-        <div class="topnav__actions">
-          <div class="language-switch" aria-label="Language switch">
-            <button id="langEn" class="language-switch__button" type="button" data-i18n="languageEnglish">
-              EN
-            </button>
-            <button id="langZh" class="language-switch__button" type="button" data-i18n="languageChinese">
-              中文
-            </button>
-          </div>
+        <div class="topnav__center"></div>
+
+        <div class="topnav__tools">
+          <button id="loadSampleButton" class="button button--ghost" type="button">Load sample</button>
+          <button id="saveButton" class="button button--ghost" type="button">Save draft</button>
+          <button id="exportJsonButton" class="button button--secondary" type="button">Export JSON</button>
 
           <details class="trash-dropdown" id="trashDropdown">
             <summary class="trash-dropdown__trigger">
-              <span data-i18n="trashLabel">Trash</span>
+              <span id="trashLabel">Trash</span>
               <span class="trash-dropdown__count" id="trashCount">0</span>
             </summary>
             <div class="trash-dropdown__panel">
-              <div class="section-heading section-heading--compact">
-                <div>
-                  <p class="section-label" data-i18n="trashLabel">Trash</p>
-                  <h3 data-i18n="trashHeading">Deleted assessments</h3>
-                </div>
+              <div class="trash-dropdown__header">
+                <p class="section-label" id="trashSectionLabel">Workspace</p>
+                <h3 id="trashSectionTitle">Deleted assessments</h3>
               </div>
               <div id="trashList" class="trash-list"></div>
             </div>
           </details>
 
-          <button id="loadSampleButton" class="button button--ghost" type="button">
-            <span data-i18n="loadSample">Load sample</span>
-          </button>
-          <button id="saveButton" class="button button--ghost" type="button">
-            <span data-i18n="saveDraft">Save draft</span>
-          </button>
-          <button id="exportJsonButton" class="button button--secondary" type="button">
-            <span data-i18n="exportJson">Export JSON</span>
-          </button>
-        </div>
+          <div class="language-switch" aria-label="Language switch">
+            <div class="language-switch__controls">
+              <button id="langEn" type="button">EN</button>
+              <button id="langZh" type="button">中文</button>
+            </div>
+          </div>
 
-        <p class="save-status" id="saveStatus">Draft ready.</p>
+          <p class="save-status" id="saveStatus">Draft ready.</p>
+        </div>
       </header>
 
       <main class="experience">

@@ -11,266 +11,384 @@
     <div class="page-shell">
       <header class="topnav panel">
         <div class="topnav__brand">
-          <span class="topnav__name">DPIA TOOLBOX</span>
-          <span class="topnav__tag">EDPB-oriented impact assessment workspace</span>
+          <span class="topnav__name" id="toolBrandName">DPIA TOOLBOX</span>
+          <span class="topnav__tag" id="toolBrandTag">EDPB-oriented impact assessment workspace</span>
         </div>
 
-        <div class="topnav__actions">
+        <div class="topnav__center"></div>
+
+        <div class="topnav__tools">
           <button id="loadSampleButton" class="button button--ghost" type="button">Load sample</button>
-          <button id="newCaseButton" class="button button--ghost" type="button">New case</button>
-          <button id="saveButton" class="button button--secondary" type="button">Save draft</button>
-          <button id="exportMarkdownButton" class="button button--ghost" type="button">Export Markdown</button>
-          <button id="printButton" class="button button--ghost" type="button">Print / PDF</button>
-          <button id="exportJsonButton" class="button button--primary" type="button">Export JSON</button>
-        </div>
+          <button id="saveButton" class="button button--ghost" type="button">Save draft</button>
+          <button id="exportJsonButton" class="button button--secondary" type="button">Export JSON</button>
 
-        <p class="save-status" id="saveStatus">Draft ready.</p>
+          <details class="trash-dropdown" id="trashDropdown">
+            <summary class="trash-dropdown__trigger">
+              <span id="trashLabel">Trash</span>
+              <span class="trash-dropdown__count" id="trashCount">0</span>
+            </summary>
+            <div class="trash-dropdown__panel">
+              <div class="trash-dropdown__header">
+                <p class="section-label">Workspace</p>
+                <h3 id="trashSectionTitle">Deleted cases</h3>
+              </div>
+              <div id="trashList" class="trash-list"></div>
+            </div>
+          </details>
+
+          <div class="language-switch" aria-label="Language switch">
+            <div class="language-switch__controls">
+              <button id="langEn" type="button">EN</button>
+              <button id="langZh" type="button">中文</button>
+            </div>
+          </div>
+
+          <p class="save-status" id="saveStatus">Draft ready.</p>
+        </div>
       </header>
 
       <main class="experience">
-        <section class="hero-stage panel">
-          <div class="hero-stage__copy">
-            <p class="eyebrow">Lifecycle workspace</p>
-            <h1 id="heroTitle">Build living DPIA records, not one-off forms.</h1>
-            <p class="hero__text" id="heroText">
-              Screen whether a DPIA is needed, structure the core assessment, attach supporting assets, manage risks and controls, and keep the record review-ready over time.
-            </p>
-
-            <div class="hero-stage__context">
-              <span class="chip chip--soft" id="heroStatusPill">Current status: Draft</span>
-              <span class="chip chip--soft" id="heroScreeningPill">Screening: Pending</span>
-              <span class="chip chip--soft" id="heroExtensionPill">Extensions: None</span>
-            </div>
-
-            <div class="hero-stage__actions">
-              <button id="advanceStateButton" class="button button--primary" type="button">Advance state</button>
-              <button id="resetSampleButton" class="button button--secondary" type="button">Reset to sample</button>
-            </div>
-          </div>
-
-          <aside class="hero-stage__snapshot panel panel--inner">
-            <div class="section-heading section-heading--compact">
-              <div>
-                <p class="section-label">Workspace snapshot</p>
-                <h2>Current case metrics</h2>
-              </div>
-            </div>
-
-            <div class="snapshot-grid" id="snapshotGrid"></div>
-          </aside>
-        </section>
-
         <section class="dashboard-stage panel">
-          <div class="section-heading">
+          <div class="section-heading dashboard-stage__heading">
             <div>
-              <p class="section-label">Overview</p>
-              <h2>DPIA portfolio dashboard</h2>
+              <p class="section-label" id="dashboardLabel">Workbench overview</p>
+              <h1 id="dashboardHeading">DPIA portfolio dashboard</h1>
             </div>
-            <p class="section-text">
-              A single surface for lifecycle state, screening posture, high-risk flags, and control completion.
+            <p class="section-text dashboard-stage__text" id="dashboardText">
+              Monitor total case volume, product distribution, and overall completion without opening a single record.
             </p>
           </div>
 
-          <div class="metric-grid" id="metricGrid"></div>
-        </section>
+          <div class="dashboard-grid">
+            <div class="metric-grid" id="metricGrid"></div>
 
-        <section class="context-stage">
-          <article class="panel record-panel">
-            <div class="section-heading section-heading--compact">
-              <div>
-                <p class="section-label">Case profile</p>
-                <h2>Assessment file</h2>
-              </div>
-              <span class="current-record-badge" id="currentRecordBadge">Draft</span>
-            </div>
-            <p class="section-text record-panel__text">
-              Capture the baseline record that all screening, risk, and approval activity hangs from.
-            </p>
-            <div id="profileGrid" class="field-grid"></div>
-          </article>
-
-          <article class="panel history-panel">
-            <div class="section-heading section-heading--compact">
-              <div>
-                <p class="section-label">Lifecycle</p>
-                <h2>State machine</h2>
-              </div>
-            </div>
-            <div id="lifecycleFlow" class="flow-list"></div>
-
-            <div class="section-heading section-heading--compact history-heading">
-              <div>
-                <p class="section-label">Cases</p>
-                <h3>Saved records</h3>
-              </div>
-            </div>
-            <div id="caseList" class="history-list"></div>
-          </article>
-        </section>
-
-        <section class="panel section-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-label">Module 1</p>
-              <h2>Screening</h2>
-            </div>
-            <p class="section-text">
-              Check must-list logic, Art. 35 triggers, and contextual high-risk signals before opening the full DPIA.
-            </p>
-          </div>
-          <div id="screeningGrid" class="field-grid"></div>
-          <div class="screening-outcome panel panel--inner">
-            <div>
-              <p class="section-label">Outcome</p>
-              <h3 id="screeningOutcomeTitle">Screening not complete</h3>
-            </div>
-            <p class="section-text" id="screeningOutcomeText">
-              Answer the key screening questions to decide whether the case should remain a short-form record or proceed into full DPIA mode.
-            </p>
-          </div>
-        </section>
-
-        <section class="panel section-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-label">Module 2</p>
-              <h2>Core DPIA</h2>
-            </div>
-            <p class="section-text">
-              Record processing context, consultation, and necessity/proportionality using a flow that maps to ICO-style structure.
-            </p>
-          </div>
-          <div id="coreSections" class="section-stack"></div>
-        </section>
-
-        <section class="panel section-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-label">Module 3</p>
-              <h2>Supporting assets</h2>
-            </div>
-            <p class="section-text">
-              Separate the processing activity from the supporting systems, platforms, and tools that influence risk and control design.
-            </p>
-          </div>
-          <div id="assetList" class="asset-grid"></div>
-          <div class="section-panel__footer">
-            <button id="addAssetButton" class="button button--secondary" type="button">Add supporting asset</button>
-          </div>
-        </section>
-
-        <section class="panel section-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-label">Module 4</p>
-              <h2>Risk & controls</h2>
-            </div>
-            <p class="section-text">
-              Keep classical risk scoring and rights-oriented control planning in one place, with residual risk and ownership visible.
-            </p>
-          </div>
-
-          <div class="risk-layout">
-            <article class="panel panel--inner">
+            <aside class="panel panel--inner distribution-panel">
               <div class="section-heading section-heading--compact">
                 <div>
-                  <p class="section-label">Risk register</p>
-                  <h3>Risk records</h3>
+                  <p class="section-label" id="distributionLabel">Distribution</p>
+                  <h2 id="distributionHeading">Products / services</h2>
                 </div>
               </div>
-              <div id="riskCards" class="editable-grid"></div>
+
+              <div class="distribution-panel__section">
+                <p class="summary-card__label" id="distributionProductsLabel">Coverage map</p>
+                <div id="productDistribution" class="distribution-wrap"></div>
+              </div>
+
+              <div class="distribution-panel__section">
+                <p class="summary-card__label" id="distributionStatusLabel">Status mix</p>
+                <div id="statusDistribution" class="status-stack"></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="panel workbench-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-label" id="listLabel">DPIA list</p>
+              <h2 id="listHeading">Assessment workbench</h2>
+            </div>
+            <p class="section-text" id="listText">
+              Select a case to open its editable workspace, view a posture snapshot, or move it to trash.
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <table class="dpia-table">
+              <thead>
+                <tr>
+                  <th id="thSeq">No.</th>
+                  <th id="thName">DPIA assessment</th>
+                  <th id="thProduct">Product / service</th>
+                  <th id="thOwner">Owner</th>
+                  <th id="thUpdated">Last updated</th>
+                  <th id="thCompletion">Completion</th>
+                </tr>
+              </thead>
+              <tbody id="assessmentTableBody"></tbody>
+            </table>
+          </div>
+
+          <div id="emptyWorkbench" class="empty-workbench" hidden>
+            <p id="emptyWorkbenchText">No DPIA cases yet. Create the first one to start the workspace.</p>
+          </div>
+
+          <div class="workbench-panel__footer">
+            <button id="newAssessmentButton" class="button button--primary" type="button">
+              <span id="newAssessmentLabel">New assessment</span>
+            </button>
+          </div>
+        </section>
+
+        <section id="detailWorkspace" class="detail-workspace" hidden>
+          <div class="detail-workspace__inner panel">
+            <div class="detail-workspace__toolbar">
+              <div class="detail-workspace__header">
+                <p class="section-label" id="detailLabel">Assessment detail</p>
+                <h2 id="detailTitle">Untitled DPIA</h2>
+                <p id="detailMeta" class="section-text"></p>
+              </div>
+              <div class="detail-workspace__actions">
+                <button id="advanceStateButton" class="button button--primary" type="button">
+                  <span id="advanceStateLabel">Advance state</span>
+                </button>
+                <button id="exportMarkdownButton" class="button button--secondary" type="button">
+                  <span id="exportMarkdownLabel">Export Markdown</span>
+                </button>
+                <button id="printButton" class="button button--ghost" type="button">
+                  <span id="printLabel">Print / PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="module-picker" id="modulePicker">
+              <span class="module-picker__label" id="modulePickerLabel">Modules</span>
+              <div class="module-picker__chips" id="modulePickerChips"></div>
+            </div>
+
+            <section class="context-stage">
+              <article class="panel record-panel">
+                <div class="section-heading section-heading--compact">
+                  <div>
+                    <p class="section-label" id="profileLabel">Case profile</p>
+                    <h2 id="profileHeading">Assessment file</h2>
+                  </div>
+                  <span class="current-record-badge" id="detailStatusBadge">Draft</span>
+                </div>
+                <p class="section-text record-panel__text" id="profileText">
+                  Capture the baseline record that all screening, risk, and approval activity hangs from.
+                </p>
+                <div id="profileGrid" class="field-grid"></div>
+              </article>
+
+              <article class="panel history-panel">
+                <div class="section-heading section-heading--compact">
+                  <div>
+                    <p class="section-label" id="flowLabel">Lifecycle</p>
+                    <h2 id="flowHeading">State machine</h2>
+                  </div>
+                </div>
+                <div id="lifecycleFlow" class="flow-list"></div>
+              </article>
+            </section>
+
+            <section class="panel section-panel" id="moduleScreening">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" id="screeningLabel">Module 1</p>
+                  <h2 id="screeningHeading">Screening</h2>
+                </div>
+                <p class="section-text" id="screeningText">
+                  Check must-list logic, Art. 35 triggers, and contextual high-risk signals before opening the full DPIA.
+                </p>
+              </div>
+              <div id="screeningGrid" class="field-grid"></div>
+              <div class="screening-outcome panel panel--inner">
+                <div>
+                  <p class="section-label" id="screeningOutcomeLabel">Outcome</p>
+                  <h3 id="screeningOutcomeTitle">Screening not complete</h3>
+                </div>
+                <p class="section-text" id="screeningOutcomeText">
+                  Answer the key screening questions to decide whether the case should remain a short-form record or proceed into full DPIA mode.
+                </p>
+              </div>
+            </section>
+
+            <section class="panel section-panel" id="moduleCoreDpia">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" id="coreDpiaLabel">Module 2</p>
+                  <h2 id="coreDpiaHeading">Core DPIA</h2>
+                </div>
+                <p class="section-text" id="coreDpiaText">
+                  Record processing context, consultation, and necessity/proportionality using a flow that maps to ICO-style structure.
+                </p>
+              </div>
+              <div id="coreSections" class="section-stack"></div>
+            </section>
+
+            <section class="panel section-panel" id="moduleAssets">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" id="assetsLabel">Module 3</p>
+                  <h2 id="assetsHeading">Supporting assets</h2>
+                </div>
+                <p class="section-text" id="assetsText">
+                  Separate the processing activity from the supporting systems, platforms, and tools that influence risk and control design.
+                </p>
+              </div>
+              <div id="assetList" class="asset-grid"></div>
               <div class="section-panel__footer">
-                <button id="addRiskButton" class="button button--secondary" type="button">Add risk</button>
+                <button id="addAssetButton" class="button button--secondary" type="button">
+                  <span id="addAssetLabel">Add supporting asset</span>
+                </button>
               </div>
-            </article>
+            </section>
 
-            <article class="panel panel--inner">
-              <div class="section-heading section-heading--compact">
+            <section class="panel section-panel" id="moduleRiskControls">
+              <div class="section-heading">
                 <div>
-                  <p class="section-label">Control plan</p>
-                  <h3>Measures library</h3>
+                  <p class="section-label" id="riskControlsLabel">Module 4</p>
+                  <h2 id="riskControlsHeading">Risk & controls</h2>
                 </div>
+                <p class="section-text" id="riskControlsText">
+                  Keep classical risk scoring and rights-oriented control planning in one place, with residual risk and ownership visible.
+                </p>
               </div>
-              <div id="controlCards" class="editable-grid"></div>
-              <div class="section-panel__footer">
-                <button id="addControlButton" class="button button--secondary" type="button">Add control</button>
+
+              <div class="risk-layout">
+                <article class="panel panel--inner">
+                  <div class="section-heading section-heading--compact">
+                    <div>
+                      <p class="section-label" id="riskRegisterLabel">Risk register</p>
+                      <h3 id="riskRegisterHeading">Risk records</h3>
+                    </div>
+                  </div>
+                  <div id="riskCards" class="editable-grid"></div>
+                  <div class="section-panel__footer">
+                    <button id="addRiskButton" class="button button--secondary" type="button">
+                      <span id="addRiskLabel">Add risk</span>
+                    </button>
+                  </div>
+                </article>
+
+                <article class="panel panel--inner">
+                  <div class="section-heading section-heading--compact">
+                    <div>
+                      <p class="section-label" id="controlPlanLabel">Control plan</p>
+                      <h3 id="controlPlanHeading">Measures library</h3>
+                    </div>
+                  </div>
+                  <div id="controlCards" class="editable-grid"></div>
+                  <div class="section-panel__footer">
+                    <button id="addControlButton" class="button button--secondary" type="button">
+                      <span id="addControlLabel">Add control</span>
+                    </button>
+                  </div>
+                </article>
               </div>
-            </article>
-          </div>
-        </section>
+            </section>
 
-        <section class="panel section-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-label">Module 5</p>
-              <h2>Extensions</h2>
-            </div>
-            <p class="section-text">
-              Load scenario-specific questions without breaking the core report structure. This first version includes a children-accessible online service module.
-            </p>
-          </div>
-          <div id="extensionGrid" class="field-grid"></div>
-        </section>
-
-        <section class="panel section-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-label">Module 6</p>
-              <h2>Approvals & review</h2>
-            </div>
-            <p class="section-text">
-              Keep DPO review, approval decisions, prior consultation signals, and review follow-up as explicit records rather than implicit status labels.
-            </p>
-          </div>
-
-          <div class="approval-layout">
-            <article class="panel panel--inner">
-              <div class="section-heading section-heading--compact">
+            <section class="panel section-panel" id="moduleExtensions" hidden>
+              <div class="section-heading">
                 <div>
-                  <p class="section-label">Approval log</p>
-                  <h3>Decision records</h3>
+                  <p class="section-label" id="extensionsLabel">Module 5</p>
+                  <h2 id="extensionsHeading">Extensions</h2>
                 </div>
+                <p class="section-text" id="extensionsText">
+                  Load scenario-specific questions without breaking the core report structure. This first version includes a children-accessible online service module.
+                </p>
               </div>
-              <div id="approvalCards" class="editable-grid"></div>
-              <div class="section-panel__footer">
-                <button id="addApprovalButton" class="button button--secondary" type="button">Add approval entry</button>
-              </div>
-            </article>
+              <div id="extensionGrid" class="field-grid"></div>
+            </section>
 
-            <article class="panel panel--inner">
-              <div class="section-heading section-heading--compact">
+            <section class="panel section-panel" id="moduleApprovals">
+              <div class="section-heading">
                 <div>
-                  <p class="section-label">Activity</p>
-                  <h3>Timeline</h3>
+                  <p class="section-label" id="approvalsLabel">Module 6</p>
+                  <h2 id="approvalsHeading">Approvals & review</h2>
                 </div>
+                <p class="section-text" id="approvalsText">
+                  Keep DPO review, approval decisions, prior consultation signals, and review follow-up as explicit records rather than implicit status labels.
+                </p>
               </div>
-              <div id="timelineList" class="timeline-list"></div>
-            </article>
-          </div>
-        </section>
 
-        <section class="panel preview-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-label">Review</p>
-              <h2>Report preview</h2>
-            </div>
-            <p class="section-text">
-              Use this as the pre-export review surface before generating PDF, Markdown, or structured outputs.
-            </p>
-          </div>
+              <div class="approval-layout">
+                <article class="panel panel--inner">
+                  <div class="section-heading section-heading--compact">
+                    <div>
+                      <p class="section-label" id="approvalLogLabel">Approval log</p>
+                      <h3 id="approvalLogHeading">Decision records</h3>
+                    </div>
+                  </div>
+                  <div id="approvalCards" class="editable-grid"></div>
+                  <div class="section-panel__footer">
+                    <button id="addApprovalButton" class="button button--secondary" type="button">
+                      <span id="addApprovalLabel">Add approval entry</span>
+                    </button>
+                  </div>
+                </article>
 
-          <div class="report-shell">
-            <div class="report-banner">
-              <p class="report-banner__label">DPIA summary</p>
-              <h3 id="reportTitle">Untitled case</h3>
-              <p class="report-paragraph" id="reportIntro"></p>
-            </div>
+                <article class="panel panel--inner">
+                  <div class="section-heading section-heading--compact">
+                    <div>
+                      <p class="section-label" id="activityLabel">Activity</p>
+                      <h3 id="activityHeading">Timeline</h3>
+                    </div>
+                  </div>
+                  <div id="timelineList" class="timeline-list"></div>
+                </article>
+              </div>
+            </section>
 
-            <div class="report-grid" id="reportGrid"></div>
+            <section class="panel preview-panel">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" id="reviewLabel">Review</p>
+                  <h2 id="reviewHeading">Report preview</h2>
+                </div>
+                <p class="section-text" id="reviewText">
+                  Use this as the pre-export review surface before generating PDF, Markdown, or structured outputs.
+                </p>
+              </div>
+
+              <div class="report-shell">
+                <div class="report-banner">
+                  <p class="report-banner__label" id="reportBannerLabel">DPIA summary</p>
+                  <h3 id="reportTitle">Untitled case</h3>
+                  <p class="report-paragraph" id="reportIntro"></p>
+                </div>
+                <div class="report-grid" id="reportGrid"></div>
+              </div>
+            </section>
           </div>
         </section>
       </main>
+    </div>
+
+    <div id="overviewModal" class="overview-modal" hidden>
+      <div class="overview-modal__backdrop" id="overviewBackdrop"></div>
+      <div class="overview-modal__card panel">
+        <div class="section-heading overview-modal__heading">
+          <div>
+            <p class="section-label" id="snapshotLabel">Snapshot</p>
+            <h2 id="modalTitle">Case posture</h2>
+          </div>
+          <button id="closeOverviewButton" class="button button--ghost" type="button">
+            <span id="closeOverviewLabel">Close</span>
+          </button>
+        </div>
+
+        <div class="snapshot-grid">
+          <div class="snapshot-item">
+            <span class="summary-card__label" id="snapshotAssessmentLabel">Assessment</span>
+            <strong id="snapshotAssessment">Untitled DPIA</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" id="snapshotProductLabel">Product / service</span>
+            <strong id="snapshotProduct">-</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" id="snapshotOwnerLabel">Owner</span>
+            <strong id="snapshotOwner">Not assigned</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" id="snapshotUpdatedLabel">Last updated</span>
+            <strong id="snapshotUpdated">Not saved yet</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" id="snapshotCompletionLabel">Completion</span>
+            <strong id="snapshotCompletion">0%</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" id="snapshotScreeningLabel">Screening</span>
+            <strong id="snapshotScreening">Pending</strong>
+          </div>
+        </div>
+
+        <div class="signal-stack" id="signalStack"></div>
+      </div>
     </div>
 
     <script src="./app.js"></script>

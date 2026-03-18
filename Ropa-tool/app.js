@@ -522,11 +522,9 @@ const roleConfigs = {
 
 const dom = {
   toolBrandName: document.getElementById("toolBrandName"),
-  languageSwitchLabel: document.getElementById("languageSwitchLabel"),
   langEn: document.getElementById("langEn"),
   langZh: document.getElementById("langZh"),
   roleSwitch: document.getElementById("roleSwitch"),
-  trashSectionLabel: document.getElementById("trashSectionLabel"),
   trashSectionTitle: document.getElementById("trashSectionTitle"),
   trashCount: document.getElementById("trashCount"),
   trashList: document.getElementById("trashList"),
@@ -538,9 +536,11 @@ const dom = {
   heroRecordPill: document.getElementById("heroRecordPill"),
   heroAutosavePill: document.getElementById("heroAutosavePill"),
   snapshotTitle: document.getElementById("snapshotTitle"),
-  sampleButton: document.getElementById("sampleButton"),
+  loadSampleButton: document.getElementById("loadSampleButton"),
   saveButton: document.getElementById("saveButton"),
-  exportButton: document.getElementById("exportButton"),
+  exportJsonButton: document.getElementById("exportJsonButton"),
+  toolBrandTag: document.getElementById("toolBrandTag"),
+  trashLabel: document.getElementById("trashLabel"),
   addActivityButton: document.getElementById("addActivityButton"),
   addActivityInlineButton: document.getElementById("addActivityInlineButton"),
   summaryLabelTemplate: document.getElementById("summaryLabelTemplate"),
@@ -601,7 +601,7 @@ dom.langZh.addEventListener("click", () => {
   render();
 });
 
-dom.sampleButton.addEventListener("click", () => {
+dom.loadSampleButton.addEventListener("click", () => {
   const role = state.activeRole;
   state[role] = buildSampleRoleState(role);
   persistState("statusSampleLoaded", { role: tx(roleConfigs[role].label) }, { touchRecord: false });
@@ -615,7 +615,7 @@ dom.saveButton.addEventListener("click", () => {
   renderTrash();
 });
 
-dom.exportButton.addEventListener("click", () => {
+dom.exportJsonButton.addEventListener("click", () => {
   exportCurrentRole();
 });
 
@@ -680,17 +680,17 @@ function render() {
 
 function renderStaticCopy() {
   dom.toolBrandName.textContent = t("brandName");
-  dom.languageSwitchLabel.textContent = state.language === "zh" ? "语言切换" : "Language";
-  dom.trashSectionLabel.textContent = t("trashSectionLabel");
+  if (dom.toolBrandTag) dom.toolBrandTag.textContent = t("heroEyebrow");
+  if (dom.trashLabel) dom.trashLabel.textContent = t("trashSectionLabel");
   dom.trashSectionTitle.textContent = t("trashSectionTitle");
   dom.heroEyebrow.textContent = t("heroEyebrow");
   dom.heroTitle.textContent = t("heroTitle");
   dom.heroText.textContent = t("heroText");
   dom.heroAutosavePill.textContent = t("heroAutosavePill");
   dom.snapshotTitle.textContent = t("snapshotTitle");
-  dom.sampleButton.textContent = t("loadSample");
+  dom.loadSampleButton.textContent = t("loadSample");
   dom.saveButton.textContent = t("saveDraft");
-  dom.exportButton.textContent = t("exportJson");
+  dom.exportJsonButton.textContent = t("exportJson");
   dom.addActivityButton.textContent = t("addActivity");
   dom.addActivityInlineButton.textContent = t("addActivity");
   dom.summaryLabelTemplate.textContent = t("summaryLabelTemplate");

@@ -11,6 +11,7 @@
       <header class="topnav panel">
         <div class="topnav__brand">
           <span class="topnav__name" id="toolBrandName">DATA COMPLIANCE TOOLBOX</span>
+          <span class="topnav__tag" id="toolBrandTag">ICO-aligned privacy operations workspace</span>
         </div>
 
         <div class="topnav__center">
@@ -18,9 +19,13 @@
         </div>
 
         <div class="topnav__tools">
+          <button id="loadSampleButton" class="button button--ghost" type="button">Load sample</button>
+          <button id="saveButton" class="button button--ghost" type="button">Save draft</button>
+          <button id="exportJsonButton" class="button button--secondary" type="button">Export JSON</button>
+
           <details class="trash-dropdown" id="trashDropdown">
             <summary class="trash-dropdown__trigger">
-              <span id="trashSectionLabel">Trash</span>
+              <span id="trashLabel">Trash</span>
               <span class="trash-dropdown__count" id="trashCount">0</span>
             </summary>
             <div class="trash-dropdown__panel">
@@ -32,8 +37,7 @@
             </div>
           </details>
 
-          <div class="language-switch" id="languageSwitch" aria-label="Language switch">
-            <span class="sr-only" id="languageSwitchLabel">Language</span>
+          <div class="language-switch" aria-label="Language switch">
             <div class="language-switch__controls">
               <button id="langEn" type="button">EN</button>
               <button id="langZh" type="button">中文</button>
@@ -65,12 +69,6 @@
               <button id="addActivityButton" class="button button--primary" type="button">
                 Add activity
               </button>
-              <button id="exportButton" class="button button--secondary" type="button">
-                Export JSON
-              </button>
-              <button id="sampleButton" class="button button--link" type="button">
-                Load sample
-              </button>
             </div>
           </div>
 
@@ -101,11 +99,7 @@
               </div>
             </div>
 
-            <div class="hero-stage__snapshot-actions">
-              <button id="saveButton" class="button button--ghost" type="button">
-                Save draft
-              </button>
-            </div>
+            <div class="hero-stage__snapshot-actions"></div>
           </aside>
         </section>
 

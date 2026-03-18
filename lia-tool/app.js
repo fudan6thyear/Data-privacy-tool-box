@@ -1285,8 +1285,27 @@ function applyStaticTranslations() {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = t(element.dataset.i18n);
   });
-  elements.langEn.classList.toggle("is-active", currentLang() === "en");
-  elements.langZh.classList.toggle("is-active", currentLang() === "zh");
+
+  const toolBrandName = document.getElementById("toolBrandName");
+  const toolBrandTag = document.getElementById("toolBrandTag");
+  const trashLabel = document.getElementById("trashLabel");
+  const trashSectionLabel = document.getElementById("trashSectionLabel");
+  const trashSectionTitle = document.getElementById("trashSectionTitle");
+  if (toolBrandName) toolBrandName.textContent = t("brandName");
+  if (toolBrandTag) toolBrandTag.textContent = t("brandTag");
+  if (trashLabel) trashLabel.textContent = t("trashLabel");
+  if (trashSectionLabel) trashSectionLabel.textContent = t("trashLabel");
+  if (trashSectionTitle) trashSectionTitle.textContent = t("trashHeading");
+
+  elements.loadSampleButton.textContent = t("loadSample");
+  elements.saveButton.textContent = t("saveDraft");
+  elements.exportJsonButton.textContent = t("exportJson");
+
+  elements.langEn.textContent = t("languageEnglish");
+  elements.langZh.textContent = t("languageChinese");
+  elements.langEn.classList.toggle("active", currentLang() === "en");
+  elements.langZh.classList.toggle("active", currentLang() === "zh");
+  elements.langEn.parentElement.dataset.activeIndex = currentLang() === "en" ? "0" : "1";
 }
 
 function renderDashboard() {
