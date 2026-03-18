@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LIA Workbench</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230f172a'/%3E%3Cpath d='M18 18h10v28h18v8H18z' fill='%23f8fafc'/%3E%3Cpath d='M34 18h12c6.627 0 12 5.373 12 12s-5.373 12-12 12H34z' fill='%232563eb'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topnav panel">
+        <div class="topnav__brand">
+          <span class="topnav__name" id="toolBrandName">LIA WORKBENCH</span>
+          <span class="topnav__tag" id="toolBrandTag">Multi-assessment legitimate interests workspace</span>
+        </div>
+
+        <div class="topnav__center"></div>
+
+        <div class="topnav__tools">
+          <button id="loadSampleButton" class="button button--ghost" type="button">Load sample</button>
+          <button id="saveButton" class="button button--ghost" type="button">Save draft</button>
+          <button id="exportJsonButton" class="button button--secondary" type="button">Export JSON</button>
+
+          <details class="trash-dropdown" id="trashDropdown">
+            <summary class="trash-dropdown__trigger">
+              <span id="trashLabel">Trash</span>
+              <span class="trash-dropdown__count" id="trashCount">0</span>
+            </summary>
+            <div class="trash-dropdown__panel">
+              <div class="trash-dropdown__header">
+                <p class="section-label" id="trashSectionLabel">Workspace</p>
+                <h3 id="trashSectionTitle">Deleted assessments</h3>
+              </div>
+              <div id="trashList" class="trash-list"></div>
+            </div>
+          </details>
+
+          <div class="language-switch" aria-label="Language switch">
+            <div class="language-switch__controls">
+              <button id="langEn" type="button">EN</button>
+              <button id="langZh" type="button">中文</button>
+            </div>
+          </div>
+
+          <p class="save-status" id="saveStatus">Draft ready.</p>
+        </div>
+      </header>
+
+      <main class="experience">
+        <section class="dashboard-stage panel">
+          <div class="section-heading dashboard-stage__heading">
+            <div>
+              <p class="section-label" data-i18n="dashboardLabel">Workbench overview</p>
+              <h1 data-i18n="dashboardHeading">LIA portfolio dashboard</h1>
+            </div>
+            <p class="section-text dashboard-stage__text" data-i18n="dashboardText">
+              Monitor total LIA volume, product or service distribution, and overall completion without entering a single assessment.
+            </p>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="metric-grid" id="metricGrid"></div>
+
+            <aside class="panel panel--inner distribution-panel">
+              <div class="section-heading section-heading--compact">
+                <div>
+                  <p class="section-label" data-i18n="distributionLabel">Distribution</p>
+                  <h2 data-i18n="distributionHeading">Products / services</h2>
+                </div>
+              </div>
+
+              <div class="distribution-panel__section">
+                <p class="summary-card__label" data-i18n="distributionProductsLabel">Coverage map</p>
+                <div id="productDistribution" class="distribution-wrap"></div>
+              </div>
+
+              <div class="distribution-panel__section">
+                <p class="summary-card__label" data-i18n="distributionStatusLabel">Status mix</p>
+                <div id="statusDistribution" class="status-stack"></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="panel workbench-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-label" data-i18n="listLabel">LIA list</p>
+              <h2 data-i18n="listHeading">Assessment workbench</h2>
+            </div>
+            <p class="section-text" data-i18n="listText">
+              Select an assessment to open its editable workspace, view a top-level posture card, or move it to trash.
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <table class="lia-table">
+              <thead>
+                <tr>
+                  <th data-i18n="tableSeq">No.</th>
+                  <th data-i18n="tableName">LIA assessment</th>
+                  <th data-i18n="tableProduct">Product / service</th>
+                  <th data-i18n="tableOwner">Owner</th>
+                  <th data-i18n="tableUpdated">Last updated</th>
+                  <th data-i18n="tableCompletion">Completion</th>
+                </tr>
+              </thead>
+              <tbody id="assessmentTableBody"></tbody>
+            </table>
+          </div>
+
+          <div id="emptyWorkbench" class="empty-workbench" hidden>
+            <p data-i18n="emptyWorkbench">No LIA assessments yet. Create the first one to start the workspace.</p>
+          </div>
+
+          <div class="workbench-panel__footer">
+            <button id="newAssessmentButton" class="button button--primary" type="button">
+              <span data-i18n="newAssessment">New assessment</span>
+            </button>
+          </div>
+        </section>
+
+        <section id="detailWorkspace" class="detail-workspace" hidden>
+          <div class="detail-workspace__inner panel">
+            <div class="detail-workspace__toolbar">
+              <div class="detail-workspace__header">
+                <p class="section-label" data-i18n="detailLabel">Assessment detail</p>
+                <h2 id="detailTitle">Untitled LIA</h2>
+                <p id="detailMeta" class="section-text"></p>
+              </div>
+              <div class="detail-workspace__actions">
+                <button id="exportReportButton" class="button button--secondary" type="button">
+                  <span data-i18n="exportReport">Export report</span>
+                </button>
+                <button id="printButton" class="button button--ghost" type="button">
+                  <span data-i18n="printPdf">Print / PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <section class="context-stage">
+              <article class="panel record-panel">
+                <div class="section-heading section-heading--compact">
+                  <div>
+                    <p class="section-label" data-i18n="profileLabel">Assessment profile</p>
+                    <h2 data-i18n="profileHeading">Assessment file</h2>
+                  </div>
+                  <span class="current-record-badge" id="detailStatusBadge">Draft</span>
+                </div>
+                <p class="section-text record-panel__text" data-i18n="profileText">
+                  Define scope, owner, product or service, and the baseline record before drafting the LIA itself.
+                </p>
+                <div id="profileGrid" class="field-grid"></div>
+              </article>
+
+              <article class="panel history-panel">
+                <div class="section-heading section-heading--compact">
+                  <div>
+                    <p class="section-label" data-i18n="flowLabel">How it works</p>
+                    <h2 data-i18n="flowHeading">Decision path</h2>
+                  </div>
+                </div>
+
+                <div class="flow-list">
+                  <div class="flow-item">
+                    <span class="flow-item__index">01</span>
+                    <div>
+                      <h3 data-i18n="flowPurposeTitle">Purpose test</h3>
+                      <p data-i18n="flowPurposeBody">Describe the benefit, business purpose, public value, and legal or ethical fit.</p>
+                    </div>
+                  </div>
+                  <div class="flow-item">
+                    <span class="flow-item__index">02</span>
+                    <div>
+                      <h3 data-i18n="flowNecessityTitle">Necessity test</h3>
+                      <p data-i18n="flowNecessityBody">Show that the processing is genuinely needed and not easily replaced by a less intrusive route.</p>
+                    </div>
+                  </div>
+                  <div class="flow-item">
+                    <span class="flow-item__index">03</span>
+                    <div>
+                      <h3 data-i18n="flowBalancingTitle">Balancing test</h3>
+                      <p data-i18n="flowBalancingBody">Stress-test expectations, vulnerability, sensitivity, control loss, and available safeguards.</p>
+                    </div>
+                  </div>
+                  <div class="flow-item">
+                    <span class="flow-item__index">04</span>
+                    <div>
+                      <h3 data-i18n="flowDecisionTitle">Decision</h3>
+                      <p data-i18n="flowDecisionBody">Record whether legitimate interests can be relied on, together with justification and review ownership.</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </section>
+
+            <section class="panel section-panel">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" data-i18n="purposePartLabel">Part 1</p>
+                  <h2 data-i18n="purposePartHeading">Purpose test</h2>
+                </div>
+                <p class="section-text" data-i18n="purposePartText">
+                  Assess whether a real legitimate interest exists behind the processing.
+                </p>
+              </div>
+              <div id="purposeGrid" class="field-grid"></div>
+            </section>
+
+            <section class="panel section-panel">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" data-i18n="necessityPartLabel">Part 2</p>
+                  <h2 data-i18n="necessityPartHeading">Necessity test</h2>
+                </div>
+                <p class="section-text" data-i18n="necessityPartText">
+                  Confirm that the processing is proportionate and not replaceable by a less intrusive route.
+                </p>
+              </div>
+              <div id="necessityGrid" class="field-grid"></div>
+            </section>
+
+            <section class="panel section-panel">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" data-i18n="balancingPartLabel">Part 3</p>
+                  <h2 data-i18n="balancingPartHeading">Balancing test</h2>
+                </div>
+                <p class="section-text" data-i18n="balancingPartText">
+                  Consider nature of the data, reasonable expectations, likely impact, and the safeguards you can apply.
+                </p>
+              </div>
+
+              <div class="balancing-layout">
+                <div id="balancingGrid" class="field-grid field-grid--dense"></div>
+                <aside class="risk-panel panel panel--inner">
+                  <div class="section-heading section-heading--compact">
+                    <div>
+                      <p class="section-label" data-i18n="riskPanelLabel">Live signal</p>
+                      <h3 data-i18n="riskPanelHeading">Balancing snapshot</h3>
+                    </div>
+                  </div>
+                  <div class="risk-score">
+                    <span data-i18n="riskScoreLabel">Risk score</span>
+                    <strong id="riskScoreValue">0</strong>
+                  </div>
+                  <div id="riskFindings" class="risk-findings"></div>
+                  <div class="risk-safeguards">
+                    <p class="summary-card__label" data-i18n="safeguardsLabel">Safeguards in place</p>
+                    <div id="safeguardPills" class="pill-wrap"></div>
+                  </div>
+                </aside>
+              </div>
+            </section>
+
+            <section class="panel section-panel">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" data-i18n="decisionPartLabel">Part 4</p>
+                  <h2 data-i18n="decisionPartHeading">Decision and sign-off</h2>
+                </div>
+                <p class="section-text" data-i18n="decisionPartText">
+                  Document your conclusion, the reasoning that supports it, and who completed the LIA.
+                </p>
+              </div>
+              <div id="decisionGrid" class="field-grid"></div>
+            </section>
+
+            <section class="panel preview-panel">
+              <div class="section-heading">
+                <div>
+                  <p class="section-label" data-i18n="reviewLabel">Review</p>
+                  <h2 data-i18n="reviewHeading">LIA report preview</h2>
+                </div>
+                <p class="section-text" data-i18n="reviewText">
+                  Use this as the internal review view before exporting the assessment to a document or case file.
+                </p>
+              </div>
+
+              <div class="report-shell">
+                <div class="report-banner" id="reportBanner">
+                  <span class="report-banner__label" data-i18n="reportDecisionStatusLabel">Decision status</span>
+                  <strong id="reportDecisionText">Pending</strong>
+                  <span id="reportDecisionHint">Complete the four sections to form a reasoned view.</span>
+                </div>
+
+                <div class="report-grid">
+                  <article class="report-card">
+                    <p class="section-label" data-i18n="reportAssessmentLabel">Assessment</p>
+                    <h3 id="reportAssessmentTitle">Untitled LIA</h3>
+                    <p id="reportAssessmentMeta" class="report-card__meta">
+                      Add an owner, review date, and processing summary.
+                    </p>
+                  </article>
+                  <article class="report-card">
+                    <p class="section-label" data-i18n="reportConclusionLabel">Core conclusion</p>
+                    <h3 id="reportConclusionHeading">Evidence still needed</h3>
+                    <p id="reportConclusionBody" class="report-card__meta">
+                      The decision aid will update as you answer the ICO template questions.
+                    </p>
+                  </article>
+                </div>
+
+                <div class="report-sections">
+                  <article class="report-section">
+                    <div class="report-section__head">
+                      <p class="section-label" data-i18n="reportPurposeLabel">Purpose test</p>
+                      <strong id="purposeStatus">In progress</strong>
+                    </div>
+                    <p id="purposeSummary" class="report-paragraph"></p>
+                  </article>
+
+                  <article class="report-section">
+                    <div class="report-section__head">
+                      <p class="section-label" data-i18n="reportNecessityLabel">Necessity test</p>
+                      <strong id="necessityStatus">In progress</strong>
+                    </div>
+                    <p id="necessitySummary" class="report-paragraph"></p>
+                  </article>
+
+                  <article class="report-section">
+                    <div class="report-section__head">
+                      <p class="section-label" data-i18n="reportBalancingLabel">Balancing test</p>
+                      <strong id="balancingStatus">In progress</strong>
+                    </div>
+                    <p id="balancingSummary" class="report-paragraph"></p>
+                  </article>
+
+                  <article class="report-section">
+                    <div class="report-section__head">
+                      <p class="section-label" data-i18n="reportJustificationLabel">Justification</p>
+                      <strong id="reportCompletedBy">Unassigned</strong>
+                    </div>
+                    <p id="decisionSummary" class="report-paragraph"></p>
+                  </article>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="overviewModal" class="overview-modal" hidden>
+      <div class="overview-modal__backdrop" id="overviewBackdrop"></div>
+      <div class="overview-modal__card panel">
+        <div class="section-heading overview-modal__heading">
+          <div>
+            <p class="section-label" data-i18n="snapshotLabel">Snapshot</p>
+            <h2 id="modalTitle">Assessment posture</h2>
+          </div>
+          <button id="closeOverviewButton" class="button button--ghost" type="button">
+            <span data-i18n="closeOverview">Close</span>
+          </button>
+        </div>
+
+        <div class="snapshot-grid">
+          <div class="snapshot-item">
+            <span class="summary-card__label" data-i18n="snapshotAssessmentLabel">Assessment</span>
+            <strong id="snapshotAssessment">Untitled LIA</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" data-i18n="snapshotProductLabel">Product / service</span>
+            <strong id="snapshotProduct">-</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" data-i18n="snapshotOwnerLabel">Owner</span>
+            <strong id="snapshotOwner">Not assigned</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" data-i18n="snapshotUpdatedLabel">Last updated</span>
+            <strong id="snapshotUpdated">Not saved yet</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" data-i18n="snapshotCompletionLabel">Completion</span>
+            <strong id="snapshotCompletion">0%</strong>
+          </div>
+          <div class="snapshot-item">
+            <span class="summary-card__label" data-i18n="snapshotDpiaLabel">DPIA trigger</span>
+            <strong id="snapshotDpia">Check needed</strong>
+          </div>
+        </div>
+
+        <div class="signal-stack" id="signalStack"></div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

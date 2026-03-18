@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPIA TOOLBOX</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page-shell">
+
+    <!-- ── Topnav ──────────────────────────── -->
+    <header class="topnav panel">
+      <div class="topnav__brand">
+        <span class="topnav__name" id="brandName">DPIA TOOLBOX</span>
+        <span class="topnav__tag" id="brandTag">EDPB-oriented impact assessment workspace</span>
+      </div>
+      <div class="topnav__tools">
+        <div class="language-switch" aria-label="Language switch">
+          <div class="language-switch__controls" data-active-index="0">
+            <button id="langEn" type="button" class="active">EN</button>
+            <button id="langZh" type="button">中文</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════ Dashboard ═══════════ -->
+    <section class="panel panel-body" style="margin-bottom:24px">
+      <div class="section-heading" style="margin-bottom:20px">
+        <div>
+          <p class="section-label" id="dashLabel">Workbench overview</p>
+          <h1 id="dashHeading">DPIA portfolio dashboard</h1>
+        </div>
+        <p class="section-text" id="dashText">Monitor assessment volume, status distribution, and completion across all cases.</p>
+      </div>
+      <div class="metric-grid" id="metricGrid"></div>
+      <div class="status-meters" id="statusMeters"></div>
+    </section>
+
+    <!-- ═══════════ Workbench ═══════════ -->
+    <section class="panel panel-body" style="margin-bottom:24px">
+      <div class="section-heading" style="margin-bottom:20px">
+        <div>
+          <p class="section-label" id="listLabel">DPIA list</p>
+          <h2 id="listHeading">Assessment workbench</h2>
+        </div>
+        <p class="section-text" id="listText">Select a case to edit, preview its posture, or create a new assessment.</p>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-primary" onclick="showCreateForm()" id="btnNewDpia">New assessment</button>
+        <button class="btn btn-tpl" onclick="showTemplateModal()" id="btnTemplate">Use template</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="dpia-table">
+          <thead>
+            <tr>
+              <th id="thTitle">DPIA assessment</th>
+              <th id="thOwner">Owner</th>
+              <th id="thStatus">Status</th>
+              <th id="thRisk">Risk level</th>
+              <th id="thProgress">Completion</th>
+              <th id="thActions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dpiaTableBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty-state" style="display:none" data-i18n="emptyWorkbench">No DPIA cases yet. Create the first one to start the workspace.</div>
+    </section>
+
+    <!-- ═══════════ Editor (inline, below workbench) ═══════════ -->
+    <section id="editorSection" class="panel panel-body" style="display:none">
+      <div class="editor-header-row" style="margin-bottom:20px">
+        <div>
+          <p class="section-label" id="editorLabel">Assessment detail</p>
+          <h2 id="editorTitle">Edit DPIA</h2>
+        </div>
+        <div class="editor-header-actions">
+          <button class="btn btn-export" onclick="exportPdf()" id="btnExport">Export PDF</button>
+          <button class="btn btn-ghost" onclick="closeEditor()" id="btnCloseEditor">&times;</button>
+        </div>
+      </div>
+
+      <form class="editor-form" onsubmit="return false;">
+
+        <!-- Basic info -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legBasic">Basic information</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head">
+                <div><h3 id="lblTitle">Case title</h3></div>
+                <span class="field-tag" id="tagRequired">REQUIRED</span>
+              </div>
+              <input type="text" id="ed-title" class="field-control">
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblActivity">Processing activity</h3></div></div>
+              <input type="text" id="ed-activity" class="field-control">
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblOwner">Case owner</h3></div></div>
+              <input type="text" id="ed-owner" class="field-control">
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblJurisdiction">Jurisdiction pack</h3></div></div>
+              <select id="ed-jurisdiction" class="field-select">
+                <option value="WP248">WP248 (EDPB core)</option>
+                <option value="ICO">ICO (UK)</option>
+                <option value="CNIL">CNIL (France)</option>
+                <option value="DSK">DSK (Germany)</option>
+              </select>
+            </article>
+          </div>
+          <div class="children-toggle">
+            <label><input type="checkbox" id="ed-children-enabled" onchange="toggleChildrenSection()"> <span id="lblChildrenEnable">Enable children's DPIA extension (ICO Annex D)</span></label>
+          </div>
+        </div>
+
+        <!-- Step 1: Screening -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legStep1">Step 1 — Screening criteria</p>
+          <p class="section-panel__hint" id="hintStep1">Check Art. 35 triggers and contextual high-risk signals before opening the full assessment.</p>
+          <div id="criteriaContainer"></div>
+        </div>
+
+        <!-- Step 2: Processing description -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legStep2">Step 2 — Processing description</p>
+          <p class="section-panel__hint" id="hintStep2">Describe nature, scope, context and purpose of data processing.</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblNature">Nature of processing</h3></div></div>
+              <textarea id="ed-nature" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblScope">Scope</h3></div></div>
+              <textarea id="ed-scope" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblContext">Context</h3></div></div>
+              <textarea id="ed-context" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblPurposes">Purposes</h3></div></div>
+              <textarea id="ed-purposes" class="field-textarea" rows="3"></textarea>
+            </article>
+          </div>
+        </div>
+
+        <!-- Step 3: Legal basis & necessity -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legStep3">Step 3 — Legal basis & necessity</p>
+          <p class="section-panel__hint" id="hintStep3">Identify lawful basis, necessity and proportionality.</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head">
+                <div><h3 id="lblLegal">Legal basis</h3></div>
+                <span class="field-tag" id="tagArt6">ART. 6</span>
+              </div>
+              <textarea id="ed-legal" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblNecessity">Necessity & proportionality assessment</h3></div></div>
+              <textarea id="ed-necessity" class="field-textarea" rows="3"></textarea>
+            </article>
+          </div>
+        </div>
+
+        <!-- Step 4: Risk identification -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legStep4">Step 4 — Risk identification</p>
+          <p class="section-panel__hint" id="hintStep4">Identify, score, and visualise risks to individuals' rights and freedoms.</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head">
+                <div><h3 id="lblRisksId">Risks identified</h3></div>
+                <span class="field-tag field-tag--risk" id="tagRisk">RISK</span>
+              </div>
+              <textarea id="ed-risks" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblRiskAssess">Risk assessment notes</h3></div></div>
+              <textarea id="ed-risk-assessment" class="field-textarea" rows="3"></textarea>
+            </article>
+          </div>
+          <div id="riskMatrixContainer"></div>
+          <div id="riskEntryContainer"></div>
+        </div>
+
+        <!-- Step 5: Mitigation measures -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legStep5">Step 5 — Mitigation measures</p>
+          <p class="section-panel__hint" id="hintStep5">Document controls and measures to address identified risks.</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblMitigation">Mitigation measures</h3></div></div>
+              <textarea id="ed-mitigation" class="field-textarea" rows="4"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head">
+                <div><h3 id="lblResidual">Residual risk</h3></div>
+                <span class="field-tag field-tag--risk" id="tagResidual">RESIDUAL</span>
+              </div>
+              <textarea id="ed-residual" class="field-textarea" rows="3"></textarea>
+            </article>
+          </div>
+        </div>
+
+        <!-- Step 6: DPO / stakeholder -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legStep6">Step 6 — DPO / stakeholder consultation</p>
+          <p class="section-panel__hint" id="hintStep6">Capture DPO advice and stakeholder input.</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head">
+                <div><h3 id="lblDpo">DPO advice</h3></div>
+                <span class="field-tag field-tag--dpo" id="tagDpo">DPO</span>
+              </div>
+              <textarea id="ed-dpo" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblStakeholder">Stakeholder consultation</h3></div></div>
+              <textarea id="ed-stakeholder" class="field-textarea" rows="3"></textarea>
+            </article>
+          </div>
+        </div>
+
+        <!-- Step 7: Sign-off -->
+        <div class="section-panel">
+          <p class="section-panel__label" id="legStep7">Step 7 — Sign-off & review</p>
+          <p class="section-panel__hint" id="hintStep7">Record approval outcome and schedule next review.</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblSignoff">Sign-off outcome</h3></div></div>
+              <textarea id="ed-signoff" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblReview">Next review date</h3></div></div>
+              <input type="date" id="ed-review" class="field-control">
+            </article>
+          </div>
+        </div>
+
+        <!-- Step 8: Children's DPIA (optional) -->
+        <div class="section-panel section-panel--children" id="childrenFieldset" style="display:none">
+          <p class="section-panel__label" id="legStep8">Step 8 — Children's DPIA extension</p>
+          <p class="section-panel__hint" id="hintStep8">ICO Annex D — additional assessments for services accessible to children.</p>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head">
+                <div><h3 id="lblAgeAssurance">Age assurance methods</h3></div>
+                <span class="field-tag field-tag--child" id="tagAadc">AADC</span>
+              </div>
+              <textarea id="ed-age-assurance" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3 id="lblParental">Parental controls</h3></div></div>
+              <textarea id="ed-parental" class="field-textarea" rows="3"></textarea>
+            </article>
+            <article class="field-card field-card--full">
+              <div class="field-card__head"><div><h3 id="lblNudge">Nudge techniques</h3></div></div>
+              <textarea id="ed-nudge" class="field-textarea" rows="3"></textarea>
+            </article>
+          </div>
+          <h4 id="hdrAadc">AADC standards compliance</h4>
+          <div class="criteria-grid" id="aadcContainer"></div>
+          <article class="field-card field-card--full" style="margin-top:14px">
+            <div class="field-card__head"><div><h3 id="lblAadcNotes">AADC notes</h3></div></div>
+            <textarea id="ed-aadc-notes" class="field-textarea" rows="2"></textarea>
+          </article>
+          <h4 id="hdrAgeRisk">Age-group risk assessment</h4>
+          <div class="field-grid">
+            <article class="field-card">
+              <div class="field-card__head"><div><h3>0–5</h3></div></div>
+              <textarea id="ed-risk-0-5" class="field-textarea" rows="2"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3>6–9</h3></div></div>
+              <textarea id="ed-risk-6-9" class="field-textarea" rows="2"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3>10–12</h3></div></div>
+              <textarea id="ed-risk-10-12" class="field-textarea" rows="2"></textarea>
+            </article>
+            <article class="field-card">
+              <div class="field-card__head"><div><h3>13–15</h3></div></div>
+              <textarea id="ed-risk-13-15" class="field-textarea" rows="2"></textarea>
+            </article>
+            <article class="field-card field-card--full">
+              <div class="field-card__head"><div><h3>16–17</h3></div></div>
+              <textarea id="ed-risk-16-17" class="field-textarea" rows="2"></textarea>
+            </article>
+          </div>
+          <article class="field-card field-card--full" style="margin-top:14px">
+            <div class="field-card__head"><div><h3 id="lblEquality">Equality law considerations</h3></div></div>
+            <textarea id="ed-equality" class="field-textarea" rows="3"></textarea>
+          </article>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" onclick="saveEditor()" id="btnSave">Save draft</button>
+          <span class="save-msg" id="saveMsg">Draft saved.</span>
+        </div>
+      </form>
+    </section>
+
+  </div><!-- page-shell -->
+
+  <!-- ═══════════ Create DPIA Modal ═══════════ -->
+  <div id="createModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+      <p class="section-label" id="createLabel">New assessment</p>
+      <h2 id="createHeading">Create DPIA case</h2>
+      <div class="create-form">
+        <div class="form-group"><label id="lblNewTitle" for="new-title">Case title</label><input type="text" id="new-title"></div>
+        <div class="form-group"><label id="lblNewActivity" for="new-activity">Processing activity</label><input type="text" id="new-activity"></div>
+        <div class="form-group"><label id="lblNewOwner" for="new-owner">Owner</label><input type="text" id="new-owner"></div>
+        <div style="display:flex;gap:10px;margin-top:18px">
+          <button class="btn btn-primary" onclick="submitCreate()" id="btnCreate">Create</button>
+          <button class="btn btn-ghost" onclick="closeCreateModal()" id="btnCancelCreate">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ Quick-view Modal ═══════════ -->
+  <div id="quickViewModal" class="modal-overlay">
+    <div class="modal-content modal-wide">
+      <button class="modal-close" onclick="closeQuickView()">&times;</button>
+      <p class="section-label" id="qvLabel">Snapshot</p>
+      <h2 id="qvHeading">Case posture</h2>
+      <div id="quickViewContent"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ Template Modal ═══════════ -->
+  <div id="templateModal" class="modal-overlay">
+    <div class="modal-content modal-wide">
+      <button class="modal-close" onclick="hideTemplateModal()">&times;</button>
+      <p class="section-label" id="tplLabel">Templates</p>
+      <h2 id="tplHeading">Select a template</h2>
+      <p class="section-text" style="margin-bottom:18px" id="tplText">Pre-built templates with guidance content for common DPIA scenarios.</p>
+      <div id="templateList"></div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
